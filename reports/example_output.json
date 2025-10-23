@@ -1,0 +1,17 @@
+{
+  "url": "https://www.example.com",
+  "readability": {
+    "flesch_reading_ease": 36.45,
+    "gunning_fog_index": 14.33,
+    "feedback": "Moderate difficulty."
+  },
+  "structure_and_flow": {
+    "assessment": "Add more headings for better navigation. Use bullet or numbered lists to improve readability."
+  },
+  "completeness_and_examples": {
+    "assessment": "Examples detected."
+  },
+  "style_guidelines": {
+    "assessment": "Style is clear, concise, and user-friendly."
+  }
+}

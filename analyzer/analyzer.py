@@ -1,7 +1,7 @@
 import argparse
 import json
-from scraper import fetch_article_text
-from readability import analyze_readability
+from modules.scraper import fetch_article_text
+from modules.readability import analyze_readability
 
 def analyze_structure_and_style(text):
     # Simple heuristic example
