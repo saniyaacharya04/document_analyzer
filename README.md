@@ -1,4 +1,5 @@
-# AI Documentation Analyzer
+# AI Documentation Analyzerb [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/saniyaacharya04/document_analyzer/blob/main/LICENSE)
+
 
 This tool analyzes MoEngage documentation (or any public web documentation) and provides a structured report evaluating:
 
