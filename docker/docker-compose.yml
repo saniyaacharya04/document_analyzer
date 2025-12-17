@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  doclens-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: doclens-api
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONPATH: /app/src
+      LOG_LEVEL: INFO
+    volumes:
+      - ../reports:/app/reports
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
