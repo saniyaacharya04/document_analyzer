@@ -1,27 +1,37 @@
-Here’s an **updated and polished version** of your README reflecting the modularized structure, CLI usage, and improvements for clarity and consistency:
+# DocLens AI
+
+DocLens AI is a production-grade documentation analysis platform that evaluates technical documentation for **readability, structure, completeness, and writing style**.
+It provides a **CLI tool**, a **REST API**, and **Dockerized deployment**, backed by automated testing and CI.
+
+This project is designed to demonstrate **real-world software engineering practices**, not a demo or toy project.
 
 ---
 
-# AI Documentation Analyzer  ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+## Key Features
 
-This tool analyzes public documentation (e.g., MoEngage docs) and provides a **structured report** evaluating:
-
-1. **Readability**
-2. **Structure & Flow**
-3. **Completeness & Examples**
-4. **Style Guidelines**
-
-Optionally, it can also **revise the content** based on suggestions generated.
+* Analyze documentation from a public URL
+* Readability scoring using linguistic metrics
+* Structural analysis (headings, lists, flow)
+* Completeness checks (examples, instructions)
+* Writing style assessment
+* Command Line Interface (CLI)
+* FastAPI-based REST API
+* Docker & Docker Compose support
+* End-to-end validation script
+* CI pipeline with automated tests
 
 ---
 
-## Features
+## Tech Stack
 
-* Evaluate readability using metrics like **Flesch Reading Ease** and **Gunning Fog Index**.
-* Assess structural quality: headings, paragraph flow, and list usage.
-* Check completeness: presence of explanations, examples, and step-by-step instructions.
-* Evaluate writing style against the **Microsoft Style Guide**.
-* Optionally rewrite content to improve clarity, flow, and readability.
+* Python 3.10
+* FastAPI
+* Pydantic
+* Requests, BeautifulSoup
+* textstat, nltk
+* Pytest
+* Docker, Docker Compose
+* GitHub Actions CI
 
 ---
 
@@ -29,141 +39,217 @@ Optionally, it can also **revise the content** based on suggestions generated.
 
 ```
 document_analyzer/
-│
-├── analyzer/                 # Core orchestration scripts
-│   ├── __init__.py
-│   ├── analyzer.py           # Main CLI entry point
-│   ├── analyzer_logic.py     # Orchestrates various assessment modules
-│   ├── report_generator.py   # Aggregates results into structured output
-│   └── revision_agent.py     # Optional agent to revise text
-│
-├── modules/                  # Individual functional modules
-│   ├── __init__.py
-│   ├── completeness.py       # Completeness & examples checker
-│   ├── readability.py        # Readability metrics calculator
-│   ├── structure.py          # Checks structure and flow
-│   ├── style.py              # Evaluates style guideline adherence
-│   ├── scraper.py            # Scrapes content using Selenium
-│   └── utils.py              # Helper functions (e.g., text cleaner)
-│
-├── reports/                  # Generated or example reports
-│   ├── example_report.json
-│   └── report.json
-│
-├── requirements.txt          # Python package dependencies
-├── README.md                 # Project documentation
-├── LICENSE
-└── venv/                     # Virtual environment (optional)
+├── docker/                 # Docker & Compose files
+├── scripts/                # Validation scripts
+├── src/doclens/             # Application source
+│   ├── api/                # FastAPI layer
+│   ├── cli/                # CLI interface
+│   ├── core/               # Core analysis logic
+│   ├── services/           # Independent analyzers
+│   ├── utils/              # Utility helpers
+│   ├── config/             # Logging & config
+│   └── premium/            # Premium feature placeholders
+├── tests/                  # Unit tests
+├── reports/                # Output reports
+├── Makefile
+├── requirements.txt
+├── requirements-dev.txt
+├── ARCHITECTURE.md
+└── README.md
 ```
 
 ---
 
-## Installation
+## Installation (Local)
 
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/saniyaacharya04/document_analyzer.git
-cd document_analyzer
-```
-
-### 2. Create and activate a virtual environment (optional but recommended)
+### Using Conda (recommended)
 
 ```bash
-python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
-```bash
-pip install --upgrade setuptools  # Ensure pkg_resources is available
+conda create -n doclens python=3.10
+conda activate doclens
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 ---
 
-## Usage
+## CLI Usage
 
-### Analyze a Documentation URL
+Run the documentation analyzer from the command line:
 
 ```bash
-python -m analyzer.analyzer "https://help.moengage.com/hc/en-us/articles/4415622460948-Push-Templates" -o reports/report.json
+make cli
 ```
 
-This command will:
-
-* Fetch the article via Selenium
-* Analyze it across **Readability, Structure, Completeness, and Style**
-* Save a **structured JSON report** to `reports/report.json`
-
----
-
-### Optional: Use the shell shortcut script
-
-If you created `run_analysis.sh`:
+Or directly:
 
 ```bash
-./run_analysis.sh "https://help.moengage.com/hc/en-us/articles/4415622460948-Push-Templates"
+PYTHONPATH=src python -m doclens.cli.analyze \
+"https://example.com/docs" \
+-o reports/report.json
 ```
-
-The report will be saved automatically in `reports/report.json`.
 
 ---
 
-## Example Output
+## API Usage
+
+### Start the API server
+
+```bash
+make api
+```
+
+API runs at:
+
+```
+http://127.0.0.1:8000
+```
+
+### Health Check
+
+```
+GET /health
+```
+
+Response:
 
 ```json
 {
-  "url": "https://help.moengage.com/hc/en-us/articles/4415622460948-Push-Templates",
-  "readability": {
-    "flesch_reading_ease": 47.43,
-    "gunning_fog_index": 9.47,
-    "feedback": "Moderate difficulty."
-  },
-  "structure_and_flow": {
-    "assessment": "Add more headings for better navigation. Use bullet or numbered lists to improve readability."
-  },
-  "completeness_and_examples": {
-    "assessment": "No clear examples or step-by-step instructions detected. Consider adding some."
-  },
-  "style_guidelines": {
-    "assessment": "Style is clear, concise, and user-friendly."
-  }
+  "status": "ok"
+}
+```
+
+### Analyze Documentation
+
+```
+POST /analyze
+```
+
+Request body:
+
+```json
+{
+  "url": "https://example.com/docs"
+}
+```
+
+Response (example):
+
+```json
+{
+  "url": "...",
+  "readability": {...},
+  "structure_and_flow": {...},
+  "completeness_and_examples": {...},
+  "style_guidelines": {...}
 }
 ```
 
 ---
 
-## Optional: Content Rewriting Agent
+## Docker Usage
 
-You can use `revision_agent.py` to **revise documentation** with suggested improvements:
+### Build and run with Docker Compose
 
 ```bash
-python analyzer/revision_agent.py input_article.txt suggestions.json -o reports/revised_output.md
+docker compose -f docker/docker-compose.yml up --build
+```
+
+API will be available at:
+
+```
+http://localhost:8000
+```
+
+Health check is automatically configured.
+
+---
+
+## Testing
+
+Run unit tests:
+
+```bash
+make test
+```
+
+Run full end-to-end validation (CLI + API):
+
+```bash
+make validate
+```
+
+This script verifies:
+
+* Dependencies
+* Unit tests
+* CLI execution
+* API startup
+* Health endpoint
+* JSON output validation
+
+---
+
+## CI Pipeline
+
+GitHub Actions CI automatically:
+
+* Installs dependencies
+* Runs unit tests
+* Validates the project structure
+
+CI configuration lives in:
+
+```
+.github/workflows/ci.yml
 ```
 
 ---
 
-## Notes
+## Architecture
 
-* Uses **Selenium with headless Chrome** for scraping content that blocks requests.
-* Ensure **Google Chrome** is installed and `chromedriver` is configured in your PATH.
-* The `textstat` warning about `pkg_resources` is harmless and can be ignored.
+A detailed system design is documented in:
+
+```
+ARCHITECTURE.md
+```
+
+It covers:
+
+* Layered architecture
+* Data flow
+* Service boundaries
+* Extensibility design
+* Premium feature placeholders
 
 ---
 
-## Style Guide
+## Premium Features (Planned)
 
-Style recommendations are based on the **Microsoft Writing Style Guide**:
+Premium capabilities are intentionally stubbed and clearly marked:
 
-* Clear and concise writing
-* Friendly, conversational tone
-* Step-by-step instructions instead of passive descriptions
-* Consistent use of headings, lists, and examples
+* AI-powered revision suggestions
+* Automatic doc rewriting
+* Export to multiple formats
+* Team analytics dashboards
+
+These are placeholders only and do not contain business logic.
+
+---
+
+## Versioning
+
+Current release:
+
+```
+v1.0.0
+```
+
+Tagged and published.
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT License. See `LICENSE` for details.
+
