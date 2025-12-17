@@ -24,3 +24,4 @@ reports/validation_report.json
 # IDE
 .vscode/
 .idea/
+.history/
