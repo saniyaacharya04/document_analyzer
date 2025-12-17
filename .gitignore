@@ -1,1 +1,26 @@
-.history/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Pytest
+.pytest_cache/
+
+# Virtual environments
+.env
+.venv
+venv/
+conda-env/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Reports
+reports/validation_report.json
+
+# IDE
+.vscode/
+.idea/
